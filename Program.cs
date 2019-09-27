@@ -18,12 +18,15 @@ namespace EOMoutputfixer
             
             var dir = System.IO.Directory.GetCurrentDirectory();
 
+            Console.WriteLine("Found " + files.Length.ToString() + " files");
             Console.WriteLine("Starting...");
             Console.WriteLine("Writing files to: " + dir);
 
             foreach (var fn in files)
             {
                 Console.Write("Processing file: " + fn.Replace("EOMoutputfixer.PDBs.", ""));
+
+                if (Path.GetExtension(fn).ToLower() != "pdb") { Console.WriteLine(" => not pdb file"); continue; }
 
                 string filePath = System.IO.Path.Combine(dir, "PDBs", fn.Replace("EOMoutputfixer.PDBs.", ""));
                 var lines = File.ReadAllLines(filePath);
