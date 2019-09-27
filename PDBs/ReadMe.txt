@@ -1,0 +1,2 @@
+﻿Add your PDB files to this folder and make sure that their "Build Action" is set to "Embedded Resource".
+The files should also be copied to output directory, as they will be sourced from the running directory.

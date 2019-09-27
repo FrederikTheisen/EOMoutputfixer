@@ -21,12 +21,13 @@ namespace EOMoutputfixer
             Console.WriteLine("Found " + files.Length.ToString() + " files");
             Console.WriteLine("Starting...");
             Console.WriteLine("Writing files to: " + dir);
+            Console.WriteLine();
 
             foreach (var fn in files)
             {
                 Console.Write("Processing file: " + fn.Replace("EOMoutputfixer.PDBs.", ""));
 
-                if (Path.GetExtension(fn).ToLower() != "pdb") { Console.WriteLine(" => not pdb file"); continue; }
+                if (Path.GetExtension(fn).ToLower() != ".pdb") { Console.WriteLine(" => not pdb file"); continue; }
 
                 string filePath = System.IO.Path.Combine(dir, "PDBs", fn.Replace("EOMoutputfixer.PDBs.", ""));
                 var lines = File.ReadAllLines(filePath);
@@ -57,10 +58,9 @@ namespace EOMoutputfixer
                 Console.WriteLine(" => done");
             }
 
-            Console.WriteLine("Complete");
+            Console.WriteLine();
+            Console.WriteLine("Completed");
         }
-
-        
     }
 
     public static class Extensions
