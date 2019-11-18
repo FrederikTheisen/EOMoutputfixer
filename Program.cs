@@ -13,24 +13,52 @@ namespace EOMoutputfixer
 
         static void Main(string[] args)
         {
-            var assembly = Assembly.GetExecutingAssembly();
-            var files = assembly.GetManifestResourceNames();
-            
-            var dir = System.IO.Directory.GetCurrentDirectory();
+            Console.Write("Broken EOM pdb file folder: ");
+            string pdbpathstring = Console.ReadLine().Trim();
+
+            while (!Path.IsPathFullyQualified(pdbpathstring))
+            {
+                Console.Write(">Path for PDBs: ");
+                pdbpathstring = Console.ReadLine().Trim();
+            }
+
+            pdbpathstring = pdbpathstring.Replace(@"\", "");
+
+            Console.Write("Output folder: ");
+            var outputfolderstring = Console.ReadLine().Trim();
+
+            while (!Path.IsPathFullyQualified(outputfolderstring))
+            {
+                Console.Write(">Output folder: ");
+                outputfolderstring = Console.ReadLine().Trim();
+            }
+
+            outputfolderstring = outputfolderstring.Replace(@"\", "");
+
+            Console.Write("First residue number: ");
+            var res = Console.ReadLine().Trim();
+
+            while (!int.TryParse(res, out FirstResidueNumber))
+            {
+                Console.Write(">First residue number: ");
+                res = Console.ReadLine().Trim();
+            }
+
+            var files = Directory.GetFiles(pdbpathstring);
 
             Console.WriteLine("Found " + files.Length.ToString() + " files");
             Console.WriteLine("Starting...");
-            Console.WriteLine("Writing files to: " + dir);
+            Console.WriteLine("Writing files to: " + outputfolderstring);
             Console.WriteLine();
 
             foreach (var fn in files)
             {
-                Console.Write("Processing file: " + fn.Replace("EOMoutputfixer.PDBs.", ""));
+                Console.Write("Processing file: " + Path.GetFileName(fn));
 
                 if (Path.GetExtension(fn).ToLower() != ".pdb") { Console.WriteLine(" => not pdb file"); continue; }
 
-                string filePath = System.IO.Path.Combine(dir, "PDBs", fn.Replace("EOMoutputfixer.PDBs.", ""));
-                var lines = File.ReadAllLines(filePath);
+                string filePath = System.IO.Path.Combine(pdbpathstring, Path.GetFileName(fn));
+                var lines = File.ReadAllLines(fn);
 
                 List<string> newlines = new List<string>();
 
@@ -53,7 +81,7 @@ namespace EOMoutputfixer
                 var text = "";
                 foreach (var l in newlines) text += l + Environment.NewLine;
 
-                File.WriteAllText(fn.Replace("EOMoutputfixer.PDBs.", ""), text.Trim());
+                File.WriteAllText(Path.Combine(outputfolderstring, Path.GetFileName(fn)), text.Trim());
 
                 Console.WriteLine(" => done");
             }
