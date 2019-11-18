@@ -53,37 +53,44 @@ namespace EOMoutputfixer
 
             foreach (var fn in files)
             {
-                Console.Write("Processing file: " + Path.GetFileName(fn));
-
-                if (Path.GetExtension(fn).ToLower() != ".pdb") { Console.WriteLine(" => not pdb file"); continue; }
-
-                string filePath = System.IO.Path.Combine(pdbpathstring, Path.GetFileName(fn));
-                var lines = File.ReadAllLines(fn);
-
-                List<string> newlines = new List<string>();
-
-                int index = FirstResidueNumber;
-
-                foreach (var line in lines)
+                try
                 {
-                    if (!line.Contains("CA")) continue;
+                    Console.Write("Processing file: " + Path.GetFileName(fn));
 
-                    var l = line;
+                    if (Path.GetExtension(fn).ToLower() != ".pdb") { Console.WriteLine(" => not pdb file"); continue; }
 
-                    l = l.Overwrite(23, "      ");
-                    l = l.Overwrite(23, index.ToString());
+                    string filePath = System.IO.Path.Combine(pdbpathstring, Path.GetFileName(fn));
+                    var lines = File.ReadAllLines(fn);
 
-                    newlines.Add(l);
+                    List<string> newlines = new List<string>();
 
-                    index++;
+                    int index = FirstResidueNumber;
+
+                    foreach (var line in lines)
+                    {
+                        if (!line.Contains("CA")) continue;
+
+                        var l = line;
+
+                        l = l.Overwrite(23, "      ");
+                        l = l.Overwrite(23, index.ToString());
+
+                        newlines.Add(l);
+
+                        index++;
+                    }
+
+                    var text = "";
+                    foreach (var l in newlines) text += l + Environment.NewLine;
+
+                    File.WriteAllText(Path.Combine(outputfolderstring, Path.GetFileName(fn)), text.Trim());
+
+                    Console.WriteLine(" => done");
                 }
-
-                var text = "";
-                foreach (var l in newlines) text += l + Environment.NewLine;
-
-                File.WriteAllText(Path.Combine(outputfolderstring, Path.GetFileName(fn)), text.Trim());
-
-                Console.WriteLine(" => done");
+                catch
+                {
+                    Console.WriteLine(" => error");
+                }
             }
 
             Console.WriteLine();
